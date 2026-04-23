@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Consultation — Summit Edge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --glass-bg: rgba(255,255,255,0.18);
+    --glass-bg-strong: rgba(255,255,255,0.22);
+    --glass-border: rgba(255,255,255,0.45);
+    --glass-shadow: 0 8px 64px rgba(90,120,160,0.18), 0 1.5px 0 rgba(255,255,255,0.55) inset;
+    --accent: #1a3a5c;
+    --accent-light: #3b7ec8;
+    --text-dark: #0f1e2e;
+    --text-mid: #2d4a6a;
+    --text-soft: #5a7a9a;
+    --text-light: #f0f6ff;
+    --btn-primary: rgba(26,58,92,0.88);
+    --btn-outline-border: rgba(26,58,92,0.55);
+    --input-bg: rgba(255,255,255,0.28);
+    --input-border: rgba(180,210,240,0.55);
+    --input-focus-border: rgba(59,126,200,0.65);
+  }
+
+  html, body {
+    min-height: 100%;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── Full-screen background ── */
+  .page-bg {
+    position: fixed;
+    inset: 0;
+    background-image: url("images/background.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: -2;
+  }
+
+  .page-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      rgba(200,220,240,0.22) 0%,
+      rgba(240,248,255,0.08) 60%,
+      rgba(180,210,240,0.30) 100%);
+  }
+
+  /* ── Page scroll wrapper ── */
+  .page-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 24px 60px;
+    align-items: center;
+  }
+
+  /* ── Logo (inside glass header, left-pinned) ── */
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .logo-tile {
+    width: 44px; height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(15,30,46,0.4);
+    flex-shrink: 0;
+  }
+
+  .logo-tile img {
+    width: 32px; height: 32px;
+    object-fit: contain;
+  }
+
+  .logo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .logo-name .dark  { color: #0f1e2e; text-shadow: 0 1px 6px rgba(255,255,255,0.55); }
+  .logo-name .vivid { color: #3b7ec8; text-shadow: 0 1px 6px rgba(255,255,255,0.55); }
+
+  /* ── Main glass container ── */
+  .main-glass {
+    width: min(1080px, 96vw);
+    margin-top: 32px;
+    padding: 52px 56px 60px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    opacity: 0;
+    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.15s forwards;
+  }
+
+  /* ── Nav bar inside the main glass ── */
+  .glass-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeIn 0.7s ease 0.3s forwards;
+  }
+
+  .glass-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .glass-nav a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.22s;
+    white-space: nowrap;
+  }
+
+  .glass-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -3px;
+    width: 0; height: 1.5px;
+    background: var(--accent-light);
+    transition: width 0.25s ease;
+  }
+
+  .glass-nav a:hover { color: var(--accent); }
+  .glass-nav a:hover::after { width: 100%; }
+
+  .contact-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 20px;
+    background: var(--accent-light);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(59,126,200,0.38);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+  .contact-pill:hover {
+    background: #2d6bb5;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59,126,200,0.45);
+  }
+
+  /* ── Page header text ── */
+  .page-header {
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
+  }
+
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+  }
+
+  .page-header h1 span { color: var(--accent-light); }
+
+  .page-divider {
+    width: 48px;
+    height: 1.5px;
+    background: linear-gradient(90deg, var(--accent-light), transparent);
+    margin-bottom: 18px;
+  }
+
+  .page-header p {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-mid);
+    max-width: 480px;
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+  }
+
+  /* ── Two-column booking layout ── */
+  .booking-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.55s forwards;
+  }
+
+  /* ── Shared glass panel ── */
+  .glass-panel {
+    background: var(--glass-bg-strong);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 36px 32px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 4px 32px rgba(90,120,160,0.12), 0 1px 0 rgba(255,255,255,0.6) inset;
+  }
+
+  .panel-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 20px;
+  }
+
+  /* ── Calendar ── */
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+
+  .cal-month-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    letter-spacing: 0.02em;
+  }
+
+  .cal-nav-btn {
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.38);
+    border: 1px solid rgba(180,210,240,0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    color: var(--text-mid);
+  }
+  .cal-nav-btn:hover {
+    background: rgba(255,255,255,0.6);
+    transform: scale(1.06);
+  }
+  .cal-nav-btn svg { width: 14px; height: 14px; }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .cal-day-name {
+    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    padding-bottom: 8px;
+  }
+
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mid);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, transform 0.15s;
+    user-select: none;
+    position: relative;
+  }
+
+  .cal-day:hover:not(.cal-day--empty):not(.cal-day--past) {
+    background: rgba(59,126,200,0.15);
+    color: var(--accent);
+  }
+
+  .cal-day--empty { cursor: default; }
+
+  .cal-day--past {
+    color: rgba(45,74,106,0.3);
+    cursor: not-allowed;
+  }
+
+  .cal-day--available::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    opacity: 0.7;
+  }
+
+  .cal-day--selected {
+    background: var(--accent) !important;
+    color: #fff !important;
+  }
+  .cal-day--selected::after { background: rgba(255,255,255,0.65); }
+
+  .cal-day--today {
+    font-weight: 600;
+    color: var(--accent-light);
+  }
+
+  /* ── Time slots ── */
+  .time-section {
+    margin-top: 28px;
+    border-top: 1px solid rgba(180,210,240,0.35);
+    padding-top: 22px;
+  }
+
+  .time-section-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 14px;
+  }
+
+  .time-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .time-slot {
+    padding: 9px 6px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-mid);
+    background: rgba(255,255,255,0.3);
+    border: 1px solid rgba(180,210,240,0.45);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+  }
+
+  .time-slot:hover {
+    background: rgba(59,126,200,0.13);
+    border-color: rgba(59,126,200,0.4);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .time-slot--selected {
+    background: var(--accent-light) !important;
+    border-color: var(--accent-light) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 12px rgba(59,126,200,0.35);
+  }
+
+  .no-date-msg {
+    font-size: 13px;
+    color: var(--text-soft);
+    text-align: center;
+    padding: 20px 0 8px;
+    font-style: italic;
+  }
+
+  /* ── Form panel ── */
+  .form-panel { display: flex; flex-direction: column; }
+
+  .form-fields { flex: 1; }
+
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    margin-bottom: 7px;
+  }
+
+  .field-opt {
+    font-weight: 300;
+    color: var(--text-soft);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 9px;
+    margin-left: 4px;
+  }
+
+  .field-input,
+  .field-textarea {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1.5px solid var(--input-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.22s, box-shadow 0.22s, background 0.22s;
+    backdrop-filter: blur(6px);
+  }
+
+  .field-input::placeholder,
+  .field-textarea::placeholder {
+    color: rgba(45,74,106,0.4);
+  }
+
+  .field-input:focus,
+  .field-textarea:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px rgba(59,126,200,0.12);
+    background: rgba(255,255,255,0.38);
+  }
+
+  .field-textarea {
+    resize: none;
+    height: 100px;
+    line-height: 1.5;
+  }
+
+  /* ── Booking summary strip ── */
+  .booking-summary {
+    background: rgba(59,126,200,0.08);
+    border: 1px solid rgba(59,126,200,0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    display: none;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .booking-summary.visible { display: flex; }
+
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  .summary-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    flex-shrink: 0;
+  }
+
+  /* ── Confirm button ── */
+  .btn-confirm {
+    width: 100%;
+    padding: 15px 24px;
+    background: var(--btn-primary);
+    color: #eef5ff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 18px rgba(26,58,92,0.28);
+    margin-top: auto;
+  }
+
+  .btn-confirm:hover {
+    background: rgba(26,58,92,0.98);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(26,58,92,0.36);
+  }
+
+  .btn-confirm:active { transform: translateY(0); }
+
+  /* ── Confirmation overlay ── */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(15,30,46,0.35);
+    backdrop-filter: blur(6px);
+  }
+
+  .confirm-overlay.active { display: flex; }
+
+  .confirm-card {
+    width: min(480px, 94vw);
+    background: rgba(240,248,255,0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 52px 48px;
+    box-shadow: 0 16px 80px rgba(26,58,92,0.28);
+    text-align: center;
+    animation: popIn 0.45s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.92) translateY(16px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);    }
+  }
+
+  .confirm-icon {
+    width: 56px; height: 56px;
+    background: rgba(59,126,200,0.12);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .confirm-icon svg { width: 28px; height: 28px; }
+
+  .confirm-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+  }
+
+  .confirm-card p {
+    font-size: 14.5px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin-bottom: 32px;
+  }
+
+  .confirm-detail {
+    background: rgba(59,126,200,0.07);
+    border: 1px solid rgba(59,126,200,0.2);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 28px;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+
+  .confirm-close {
+    padding: 13px 32px;
+    background: var(--btn-primary);
+    color: #eef5ff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(26,58,92,0.26);
+  }
+  .confirm-close:hover {
+    background: rgba(26,58,92,0.98);
+    transform: translateY(-1px);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ── Dot grid decoration ── */
+  .dot-grid {
+    position: fixed;
+    bottom: 48px;
+    right: 48px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    animation: dotFade 1.2s ease 1s forwards;
+  }
+  @keyframes dotFade { to { opacity: 0.18; } }
+
+  /* ── Responsive ── */
+  @media (max-width: 780px) {
+    .main-glass { padding: 28px 20px 44px; margin-top: 20px; }
+    .glass-header { flex-wrap: wrap; gap: 14px; margin-bottom: 32px; }
+    .glass-nav { gap: 14px; }
+    .booking-layout { grid-template-columns: 1fr; }
+    .glass-panel { padding: 28px 22px; }
+    .confirm-card { padding: 36px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="page-bg"></div>
+
+<!-- Page scroll wrapper -->
+<div class="page-wrap">
+
+  <!-- Main glass container -->
+  <div class="main-glass">
+
+    <!-- Nav -->
+    <div class="glass-header">
+      <!-- Logo inside the glass, left side -->
+      <a href="index.html" class="site-logo">
+        <div class="logo-tile">
+          <img src="logo/summitedge.png" alt="Summit Edge">
+        </div>
+        <span class="logo-name">
+          <span class="dark">Summit</span><span class="vivid"> Edge</span>
+        </span>
+      </a>
+
+      <nav class="glass-nav">
+        <a href="index.html">Home</a>
+        <a href="#">About Us</a>
+        <a href="#">Services</a>
+        <a href="#">Resources</a>
+        <a href="#">Why Choose Us</a>
+      </nav>
+      <a href="#" class="contact-pill">Contact</a>
+    </div>
+
+    <!-- Page heading -->
+    <div class="page-header">
+      <h1>Book a <span>Consultation</span></h1>
+      <div class="page-divider"></div>
+      <p>Schedule a time that works for you. Choose an available slot and we'll handle the rest.</p>
+    </div>
+
+    <!-- Calendar + Form -->
+    <div class="booking-layout">
+
+      <!-- LEFT: Calendar panel -->
+      <div class="glass-panel">
+        <div class="panel-label">Select a Date &amp; Time</div>
+
+        <!-- Calendar header -->
+        <div class="calendar-header">
+          <button class="cal-nav-btn" id="prevMonth" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <span class="cal-month-label" id="monthLabel"></span>
+          <button class="cal-nav-btn" id="nextMonth" aria-label="Next month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Day grid -->
+        <div class="cal-grid" id="calGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Time slots -->
+        <div class="time-section">
+          <div class="time-section-label" id="timeLabel">Choose a date to see available times</div>
+          <div id="timeSlotContainer">
+            <div class="no-date-msg">Please select a date above.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Form panel -->
+      <div class="glass-panel form-panel">
+        <div class="panel-label">Your Information</div>
+
+        <!-- Booking summary (shown when date + time selected) -->
+        <div class="booking-summary" id="bookingSummary">
+          <div class="summary-item">
+            <span class="summary-dot"></span>
+            <span id="summaryDate">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-dot"></span>
+            <span id="summaryTime">—</span>
+          </div>
+        </div>
+
+        <div class="form-fields">
+          <div class="field-group">
+            <label class="field-label" for="fullName">Full Name</label>
+            <input class="field-input" type="text" id="fullName" placeholder="Jane Smith" autocomplete="name">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="email">Email Address</label>
+            <input class="field-input" type="email" id="email" placeholder="jane@company.com" autocomplete="email">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="phone">Phone <span class="field-opt">optional</span></label>
+            <input class="field-input" type="tel" id="phone" placeholder="+27 11 000 0000" autocomplete="tel">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="message">Message <span class="field-opt">optional</span></label>
+            <textarea class="field-textarea" id="message" placeholder="Brief description of your needs…"></textarea>
+          </div>
+        </div>
+
+        <button class="btn-confirm" id="confirmBtn">Confirm Booking</button>
+      </div>
+
+    </div><!-- /booking-layout -->
+  </div><!-- /main-glass -->
+</div><!-- /page-wrap -->
+
+<!-- Dot grid decoration -->
+<svg class="dot-grid" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <pattern id="dots" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#1a3a5c"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="120" fill="url(#dots)"/>
+</svg>
+
+<!-- Confirmation overlay -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-card">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#3b7ec8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+    <h2>You're Scheduled</h2>
+    <p>Your consultation has been scheduled.<br>We'll be in touch shortly.</p>
+    <div class="confirm-detail" id="confirmDetail"></div>
+    <button class="confirm-close" id="confirmClose">Close</button>
+  </div>
+</div>
+
+<script>
+  // ── State ──
+  const MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+  const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  const TIMES = ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM',
+                 '2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM'];
+
+  // Mark some days as unavailable (weekends auto-blocked in rendering)
+  const UNAVAILABLE_DAYS = [3, 8, 17, 22]; // day-of-month numbers
+
+  let today = new Date();
+  let viewYear  = today.getFullYear();
+  let viewMonth = today.getMonth();
+  let selectedDate = null;
+  let selectedTime = null;
+
+  // ── DOM refs ──
+  const monthLabel        = document.getElementById('monthLabel');
+  const calGrid           = document.getElementById('calGrid');
+  const timeLabel         = document.getElementById('timeLabel');
+  const timeSlotContainer = document.getElementById('timeSlotContainer');
+  const bookingSummary    = document.getElementById('bookingSummary');
+  const summaryDate       = document.getElementById('summaryDate');
+  const summaryTime       = document.getElementById('summaryTime');
+  const confirmBtn        = document.getElementById('confirmBtn');
+  const confirmOverlay    = document.getElementById('confirmOverlay');
+  const confirmDetail     = document.getElementById('confirmDetail');
+  const confirmClose      = document.getElementById('confirmClose');
+
+  // ── Build calendar ──
+  function renderCalendar() {
+    monthLabel.textContent = MONTHS[viewMonth] + ' ' + viewYear;
+    calGrid.innerHTML = '';
+
+    // Day name headers
+    DAYS.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-day-name';
+      el.textContent = d;
+      calGrid.appendChild(el);
+    });
+
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    // Empty cells
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day cal-day--empty';
+      calGrid.appendChild(el);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day';
+
+      const cellDate = new Date(viewYear, viewMonth, d);
+      const isToday  = cellDate.toDateString() === today.toDateString();
+      const isPast   = cellDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isWeekend = cellDate.getDay() === 0 || cellDate.getDay() === 6;
+      const isUnavail = UNAVAILABLE_DAYS.includes(d);
+
+      el.textContent = d;
+
+      if (isToday)               el.classList.add('cal-day--today');
+      if (isPast || isWeekend || isUnavail) {
+        el.classList.add('cal-day--past');
+      } else {
+        el.classList.add('cal-day--available');
+        el.addEventListener('click', () => selectDate(d, cellDate));
+      }
+
+      if (selectedDate && cellDate.toDateString() === selectedDate.toDateString()) {
+        el.classList.add('cal-day--selected');
+      }
+
+      calGrid.appendChild(el);
+    }
+  }
+
+  // ── Select a date ──
+  function selectDate(d, dateObj) {
+    selectedDate = dateObj;
+    selectedTime = null;
+    renderCalendar();
+    renderTimeSlots();
+    updateSummary();
+  }
+
+  // ── Render time slots ──
+  function renderTimeSlots() {
+    if (!selectedDate) {
+      timeLabel.textContent = 'Choose a date to see available times';
+      timeSlotContainer.innerHTML = '<div class="no-date-msg">Please select a date above.</div>';
+      return;
+    }
+
+    const opts = { weekday: 'long', month: 'long', day: 'numeric' };
+    timeLabel.textContent = selectedDate.toLocaleDateString('en-ZA', opts);
+
+    const grid = document.createElement('div');
+    grid.className = 'time-slots';
+
+    TIMES.forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'time-slot';
+      el.textContent = t;
+      if (selectedTime === t) el.classList.add('time-slot--selected');
+      el.addEventListener('click', () => {
+        selectedTime = t;
+        renderTimeSlots();
+        updateSummary();
+      });
+      grid.appendChild(el);
+    });
+
+    timeSlotContainer.innerHTML = '';
+    timeSlotContainer.appendChild(grid);
+  }
+
+  // ── Update summary strip ──
+  function updateSummary() {
+    if (selectedDate) {
+      bookingSummary.classList.add('visible');
+      const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+      summaryDate.textContent = selectedDate.toLocaleDateString('en-ZA', opts);
+    }
+    if (selectedTime) {
+      summaryTime.textContent = selectedTime;
+    } else {
+      summaryTime.textContent = '— time not yet selected';
+    }
+  }
+
+  // ── Month navigation ──
+  document.getElementById('prevMonth').addEventListener('click', () => {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    renderCalendar();
+  });
+
+  document.getElementById('nextMonth').addEventListener('click', () => {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    renderCalendar();
+  });
+
+  // ── Confirm booking ──
+  confirmBtn.addEventListener('click', () => {
+    const name  = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    if (!name || !email) {
+      document.getElementById('fullName').focus();
+      document.getElementById('fullName').style.borderColor = 'rgba(200,80,60,0.55)';
+      setTimeout(() => document.getElementById('fullName').style.borderColor = '', 1800);
+      return;
+    }
+
+    if (!selectedDate || !selectedTime) {
+      calGrid.style.outline = '2px solid rgba(59,126,200,0.4)';
+      calGrid.style.borderRadius = '10px';
+      setTimeout(() => { calGrid.style.outline = ''; calGrid.style.borderRadius = ''; }, 1800);
+      return;
+    }
+
+    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateStr = selectedDate.toLocaleDateString('en-ZA', opts);
+    confirmDetail.innerHTML =
+      `<strong>${name}</strong><br>${email}<br><br>` +
+      `📅 ${dateStr}<br>🕐 ${selectedTime}`;
+
+    confirmOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  confirmClose.addEventListener('click', () => {
+    confirmOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  });
+
+  confirmOverlay.addEventListener('click', e => {
+    if (e.target === confirmOverlay) {
+      confirmOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // ── Init ──
+  renderCalendar();
+  renderTimeSlots();
+</script>
+</body>
+</html>
