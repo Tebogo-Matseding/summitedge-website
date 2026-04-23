@@ -61,7 +61,7 @@
   .glass {
     position: relative;
     z-index: 2;
-    width: min(780px, 92vw);
+    width: min(1000px, 92vw);
     padding: 52px 60px 58px;
     background: var(--glass-bg);
     backdrop-filter: blur(22px) saturate(1.6);
@@ -80,11 +80,12 @@
     to   { opacity: 1; transform: translateY(0);    }
   }
 
-  /* ── Glass header row (logo left + nav centered) ── */
+  /* ── Glass header row: logo left · nav center · pill right ── */
   .glass-header {
-    position: relative;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 24px;
     margin-bottom: 52px;
     opacity: 0;
     animation: fadeIn 0.7s ease 0.3s forwards;
@@ -94,16 +95,13 @@
     to { opacity: 1; }
   }
 
-  /* Logo pinned to the far left, always 24px clear of the card's left edge */
+  /* Logo now lives inside the card as a normal flex child */
   .glass-logo {
-    position: absolute;
-    right: calc(50% + min(780px, 92vw) / 2 + 24px);
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
     align-items: center;
     gap: 10px;
-    z-index: 3;
+    flex-shrink: 0;
+    text-decoration: none;
   }
 
   /* Logo tile — compact solid dark blue square */
@@ -145,12 +143,9 @@
     text-shadow: 0 1px 6px rgba(255,255,255,0.55);
   }
 
-  /* Blue pill contact button — right edge of header, vertically in line with nav */
+  /* Contact pill — right side of header row */
   .contact-pill {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     padding: 9px 20px;
@@ -166,12 +161,11 @@
     box-shadow: 0 4px 16px rgba(59,126,200,0.38);
     transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     white-space: nowrap;
-    z-index: 3;
   }
 
   .contact-pill:hover {
     background: #2d6bb5;
-    transform: translateY(calc(-50% - 2px));
+    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(59,126,200,0.45);
   }
 
@@ -343,20 +337,45 @@
 
   @media (max-width: 600px) {
     .glass {
-      padding: 28px 20px 44px;
+      padding: 24px 20px 40px;
     }
+
+    /* Stack header: logo row on top, then nav, then pill */
+    .glass-header {
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
     .glass-logo {
-      left: 12px;
-      top: 24px;
-      transform: none;
+      /* stays as a normal flex row — logo tile + company name */
     }
+
     .glass-logo-inner {
-      padding: 8px 12px;
+      width: 42px;
+      height: 42px;
     }
-    .glass-logo-inner img { height: 28px; }
-    .company-name { font-size: 14px; }
-    .glass-header { margin-bottom: 32px; }
-    .glass-nav { gap: 14px; justify-content: center; }
+
+    .glass-logo-inner img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .company-name { font-size: 15px; }
+
+    .glass-nav {
+      gap: 12px 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .contact-pill {
+      /* pill sits below nav, full-width-ish */
+      width: 100%;
+      justify-content: center;
+    }
+
     .btn-group { flex-direction: column; }
     .btn { text-align: center; }
   }
@@ -1073,20 +1092,20 @@
 <!-- Hero section -->
 <section class="hero">
 
-  <!-- Logo outside card, pinned to far left of viewport -->
-  <div class="glass-logo">
-    <div class="glass-logo-inner">
-      <!-- Replace with your own logo file path e.g. images/logo.png -->
-      <img src="logo/summitedge.png" alt="Summit Edge Logos">
-    </div>
-    <span class="company-name"><span class="name-dark">Summit</span><span class="name-vivid"> Edge</span></span>
-  </div>
-
   <!-- Glass container -->
   <div class="glass">
 
-    <!-- Header row: logo left · nav centered · spacer right -->
+    <!-- Header row: logo left · nav center · pill right -->
     <div class="glass-header">
+
+      <!-- Logo now lives inside the card, left-pinned -->
+      <a href="#" class="glass-logo">
+        <div class="glass-logo-inner">
+          <img src="logo/summitedge.png" alt="Summit Edge">
+        </div>
+        <span class="company-name"><span class="name-dark">Summit</span><span class="name-vivid"> Edge</span></span>
+      </a>
+
       <nav class="glass-nav">
         <a href="#" class="active">Home</a>
         <a href="#about">About Us</a>
@@ -1473,21 +1492,6 @@
 </footer>
 
 <script>
-  // ── Logo alignment (hero) ──
-  function alignLogoWithNav() {
-    var nav  = document.querySelector('.glass-nav');
-    var logo = document.querySelector('.glass-logo');
-    var hero = document.querySelector('.hero');
-    if (!nav || !logo || !hero) return;
-    var navRect  = nav.getBoundingClientRect();
-    var heroRect = hero.getBoundingClientRect();
-    var navCenterY = navRect.top + navRect.height / 2 - heroRect.top;
-    logo.style.top       = navCenterY + 'px';
-    logo.style.transform = 'translateY(-50%)';
-  }
-  window.addEventListener('load',   alignLogoWithNav);
-  window.addEventListener('resize', alignLogoWithNav);
-
   // ── Scroll reveal ──
   const revealEls = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
